@@ -20,14 +20,15 @@ has '_service' => (
 sub _build__service {
     my ($self) = @_;
 
-    my $app = sub { meon::Web2->plack_handler(@_) };
+    my $app = sub {meon::Web2->plack_handler(@_)};
 
     my $time_service = builder {
         enable "Plack::Middleware::ContentLength";
         $app;
     };
     my $t_server = Plack::Test::Server->new($time_service);
-    $self->{_url} = 'http://127.0.0.1:'.$t_server->port.'/v1/';
+    $self->{_url} = 'http://127.0.0.1:' . $t_server->port . '/';
+
     return $t_server;
 }
 

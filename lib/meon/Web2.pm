@@ -8,8 +8,11 @@ use utf8;
 our $VERSION = '0.01';
 
 use Try::Tiny;
+use HTTP::Exception;
+use Scalar::Util qw(blessed);
 
 use meon::Web2::Req;
+use meon::Web2::Config;
 
 our $start_time = time();
 our $req_count  = 0;
@@ -27,19 +30,32 @@ sub plack_handler {
         $0 = __PACKAGE__ . ' ' . $this_req->path_info;
 
         my $resp = try {
-            $this_req->resp_text_plain(
-                'Service-Name: ' . __PACKAGE__,
-                'Version: ' . $self->VERSION,
-                'Uptime: ' . (time() - $start_time),
-                'Request-Count: ' . $req_count,
-                'Pending-Requests: ' . meon::Web2::Req->get_pending_req,
-            );
+            $this_req->resolve_path;
         }
         catch {
-            $this_req->respond(503, [], 'internal server error: ' . $_);
+            my $e           = $_;
+            my $status_code = 503;
+            my $status_msg  = 'internal server error: ' . $e;
+
+            if (blessed($e) && $e->can('code') && $e->can('status_message')) {
+                $status_code = $e->code;
+                $status_msg  = $e->status_message;
+            }
+            $this_req->respond($status_code, [], $status_msg)
+                unless $this_req->responded;
         };
 
         return $resp;
+    };
+}
+
+sub hcheck_data {
+    return {
+        'service_name'     => __PACKAGE__,
+        'version'          => __PACKAGE__->VERSION,
+        'uptime'           => (time() - $start_time),
+        'request_count'    => $req_count,
+        'pending_requests' => meon::Web2::Req->get_pending_req,
     };
 }
 
@@ -75,7 +91,7 @@ order):
 
 =head1 BUGS
 
-Please report any bugs or feature requests via L<https://github.com/meon/meon-Web2/issues>.
+Please report any bugs or feature requests via L<https://github.com/meon/perl-meon-Web2/issues>.
 
 =head1 AUTHOR
 

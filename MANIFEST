@@ -1,0 +1,24 @@
+bin/meon-web2.psgi
+bin/run-meon-web2
+Build.PL
+Changes
+etc/meon/web2-config.ini
+etc/meon/web2-log4perl.conf
+lib/meon/Web2.pm
+lib/meon/Web2/Config.pm
+lib/meon/Web2/Req.pm
+lib/meon/Web2/SPc.pm
+MANIFEST			This list of files
+META.json
+META.yml
+README
+share/meon-web/template/xsl/debug.xsl
+srv/www/meon-web2/localhost/content/index.xml
+srv/www/meon-web2/localhost/template/xsl/default.xsl
+srv/www/meon-web2/localhost/template/xsl/lib/html-page.xsl
+srv/www/meon-web2/localhost/www/favicon.ico
+srv/www/meon-web2/localhost/www/robots.txt
+srv/www/meon-web2/localhost/www/static/test.txt
+srv/www/meon-web2/localhost/www/test.xml
+t/01_meon-Web2.t
+t/tlib/Test/meon/Web2/service.pm
